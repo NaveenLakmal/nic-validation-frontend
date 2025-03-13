@@ -1,0 +1,192 @@
+import * as React from 'react';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import { Box, Button, Container, MenuItem } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
+import axios from 'axios';
+
+
+const GenerateReports = () => {
+
+    const [fileName, setFileName] = React.useState("");
+    const [data, setData] = React.useState([]); // Store API response
+    const [error, setError] = React.useState(null); // Store error message
+    const [loading, setLoading] = React.useState(false); // Loading state
+    const [exsitFileName,setExsitsFileName] = React.useState([]);
+
+    console.log(data);
+
+
+
+
+    const getNicsByFileName = async (fileName) => {
+        setLoading(true);
+        setError(null);
+        try {
+            console.log("this is Responese up" + fileName);
+
+
+            const response = await axios.get(`http://localhost:8080/nic/get-file/${fileName}`)
+            console.log("this is Responese" + response.data);
+            setData(response.data); // Set API response to state
+        } catch (err) {
+            setError(err.response?.data?.message || "Error fetching NICs");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+
+
+    React.useEffect(() => {
+        if (fileName) {
+            getNicsByFileName(fileName);
+        }
+    }, [fileName]);
+
+    React.useEffect(() => {
+        
+        axios.get('http://localhost:8080/file/get-all')
+        .then((response) => {
+            setExsitsFileName(response.data);
+          })
+          .catch((error) => {
+            console.error('Error fetching file names:', error);
+          });
+
+    }, []);
+
+
+    function createData(name, calories, fat, carbs, protein) {
+        return { name, calories, fat, carbs, protein };
+    }
+
+    const rows = [
+        createData('Frozen yoghurt', 159, 6.0, 24),
+        createData('Ice cream sandwich', 237, 9.0, 37),
+        createData('Eclair', 262, 16.0, 24),
+        createData('Cupcake', 305, 3.7, 67),
+        createData('Gingerbread', 356, 16.0, 49),
+    ];
+
+    const fileNames = ['nn', 'file2'];
+
+    return (
+        <>
+            <Container
+                sx={{
+                    display: 'flex',
+                    p: 3,
+                    marginTop: 5,
+                    justifyContent: 'space-around',
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    gap: { xs: 3, sm: 5 }  // Increase gap between TextField and buttons on small screens
+                }}
+            >
+                <Autocomplete
+                    disablePortal
+                    options={exsitFileName}
+                    onChange={(event, value) => setFileName(value)}
+                    sx={{
+                        width: { xs: '100%', sm: 300 },  // 100% width on mobile, 300px on larger screens
+                        height: '40px',
+                        marginBottom: { xs: 3, sm: 0 }  // Add bottom margin for mobile to create more space
+                    }}
+                    renderInput={(params) => <TextField {...params} label="File Name" />}
+                />
+
+
+
+                {/* <Button variant="contained" color="primary" onClick={getNicsByFileName} disabled={loading}>
+                    {loading ? "Loading..." : "Fetch NICs"}
+                </Button> */}
+
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'column', sm: 'row' },
+                        gap: { xs: 2, sm: 5 },
+                        width: '100%'
+                    }}
+                >
+                    <Button
+                        variant="outlined"
+                        color="error"
+                        sx={{
+                            width: { xs: '100%', sm: '120px' },  // 100% width on mobile, 120px on larger screens
+                            fontWeight: 'bold',
+                            height: '45px',
+                            fontSize: '14px',
+                            gap: 2
+                        }}
+                    >
+                        PDF <DownloadIcon />
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        color="success"
+                        sx={{
+                            width: { xs: '100%', sm: '120px' },
+                            fontWeight: 'bold',
+                            height: '45px',
+                            fontSize: '14px',
+                            gap: 2
+                        }}
+                    >
+                        XLSX <DownloadIcon />
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        sx={{
+                            width: { xs: '100%', sm: '120px' },
+                            fontWeight: 'bold',
+                            height: '45px',
+                            fontSize: '14px',
+                            color: '#fc9357',
+                            gap: 2
+                        }}
+                    >
+                        CSV <DownloadIcon />
+                    </Button>
+                </Box>
+            </Container>
+
+
+            <Container sx={{ mt: 4 }}>
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650, overflowX: 'auto' }} aria-label="simple table">
+                        <TableHead>
+                            <TableRow >
+                                <TableCell sx={{ fontWeight: "bold", fontSize: 16 }}>Id</TableCell>
+                                <TableCell sx={{ fontWeight: "bold", fontSize: 16 }}>Nic Number</TableCell>
+                                <TableCell sx={{ fontWeight: "bold", fontSize: 16 }} align="right">BirthDay</TableCell>
+                                <TableCell sx={{ fontWeight: "bold", fontSize: 16 }} align="right">Age</TableCell>
+                                <TableCell sx={{ fontWeight: "bold", fontSize: 16 }} align="right">Gender</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {rows.map((row) => (
+                                <TableRow hover key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    <TableCell component="th" scope="row">{row.fat} </TableCell>
+                                    <TableCell component="th" scope="row">{row.name}</TableCell>
+                                    <TableCell align="right">{row.calories}</TableCell>
+                                    <TableCell align="right">{row.fat}</TableCell>
+                                    <TableCell align="right">{row.carbs}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Container>
+        </>
+    );
+}
+
+export default GenerateReports;
