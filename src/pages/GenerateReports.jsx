@@ -61,6 +61,70 @@ const GenerateReports = () => {
     }, []);
 
 
+
+    const handleDownloadPDF = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8080/nic/export/pdf/${fileName}`, {
+                responseType: 'blob', // Important: ensures we receive binary data
+            });
+
+            // Create a blob from the PDF response
+            const blob = new Blob([response.data], { type: 'application/pdf' });
+
+            // Create a URL for the blob
+            const url = window.URL.createObjectURL(blob);
+
+            // Create a temporary anchor element
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${fileName}.pdf`; // Set the filename
+            document.body.appendChild(a);
+            a.click(); // Trigger download
+
+            // Cleanup
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Error downloading the PDF:", error);
+        }
+    };
+
+    const handleDownloadXLSX = async () => {
+        console.log("hello xscel")
+        try {
+            const response = await axios.get(`http://localhost:8080/nic/export/excel/${fileName}`, {
+                responseType: 'blob', // Ensures binary data
+            });
+    
+            // Create a blob from the XLSX response
+            const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    
+            // Create a URL for the blob
+            const url = window.URL.createObjectURL(blob);
+    
+            // Create a temporary anchor element
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${fileName}.xlsx`; // Set the filename
+            document.body.appendChild(a);
+            a.click(); // Trigger download
+    
+            // Cleanup
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Error downloading the XLSX file:", error);
+        }
+    };
+
+    
+
+
+
+
+
+
+
     function createData(name, calories, fat, carbs, protein) {
         return { name, calories, fat, carbs, protein };
     }
@@ -116,6 +180,7 @@ const GenerateReports = () => {
                     <Button
                         variant="outlined"
                         color="error"
+
                         sx={{
                             width: { xs: '100%', sm: '120px' },  // 100% width on mobile, 120px on larger screens
                             fontWeight: 'bold',
@@ -123,12 +188,14 @@ const GenerateReports = () => {
                             fontSize: '14px',
                             gap: 2
                         }}
+                        onClick={handleDownloadPDF}
                     >
                         PDF <DownloadIcon />
                     </Button>
                     <Button
                         variant="outlined"
                         color="success"
+
                         sx={{
                             width: { xs: '100%', sm: '120px' },
                             fontWeight: 'bold',
@@ -136,11 +203,14 @@ const GenerateReports = () => {
                             fontSize: '14px',
                             gap: 2
                         }}
+                        onClick={handleDownloadXLSX}
+
                     >
                         XLSX <DownloadIcon />
                     </Button>
                     <Button
                         variant="outlined"
+
                         sx={{
                             width: { xs: '100%', sm: '120px' },
                             fontWeight: 'bold',
@@ -149,6 +219,7 @@ const GenerateReports = () => {
                             color: '#fc9357',
                             gap: 2
                         }}
+                        
                     >
                         CSV <DownloadIcon />
                     </Button>
@@ -169,7 +240,7 @@ const GenerateReports = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {data.map((row,index) => (
+                            {data.map((row, index) => (
                                 <TableRow hover key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                     {/* <TableCell component="th" scope="row">{row.} </TableCell> */}
                                     <TableCell component="th" scope="row">{row.nicNumber}</TableCell>
