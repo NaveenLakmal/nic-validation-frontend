@@ -117,6 +117,32 @@ const GenerateReports = () => {
         }
     };
 
+    const handleDownloadCSV = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8080/nic/export/csv/${fileName}`, {
+                responseType: 'blob', // Ensures binary data
+            });
+    
+            // Create a blob from the CSV response
+            const blob = new Blob([response.data], { type: 'text/csv' });
+    
+            // Create a URL for the blob
+            const url = window.URL.createObjectURL(blob);
+    
+            // Create a temporary anchor element
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${fileName}.csv`; // Set the filename
+            document.body.appendChild(a);
+            a.click(); // Trigger download
+    
+            // Cleanup
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Error downloading the CSV file:", error);
+        }
+    };
     
 
 
@@ -220,6 +246,7 @@ const GenerateReports = () => {
                             gap: 2
                         }}
                         
+                        onClick={handleDownloadCSV}
                     >
                         CSV <DownloadIcon />
                     </Button>
