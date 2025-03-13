@@ -17,24 +17,23 @@ const GenerateReports = () => {
 
     const [fileName, setFileName] = React.useState("");
     const [data, setData] = React.useState([]); // Store API response
+
     const [error, setError] = React.useState(null); // Store error message
     const [loading, setLoading] = React.useState(false); // Loading state
-    const [exsitFileName,setExsitsFileName] = React.useState([]);
+    const [exsitFileName, setExsitsFileName] = React.useState([]);
 
     console.log(data);
 
 
 
-
+    //this is use for get the nic by file name 
     const getNicsByFileName = async (fileName) => {
         setLoading(true);
         setError(null);
         try {
-            console.log("this is Responese up" + fileName);
-
 
             const response = await axios.get(`http://localhost:8080/nic/get-file/${fileName}`)
-            console.log("this is Responese" + response.data);
+            console.log("this is Responese" + response.data.nic);
             setData(response.data); // Set API response to state
         } catch (err) {
             setError(err.response?.data?.message || "Error fetching NICs");
@@ -43,23 +42,21 @@ const GenerateReports = () => {
         }
     }
 
-
-
     React.useEffect(() => {
         if (fileName) {
             getNicsByFileName(fileName);
         }
     }, [fileName]);
 
+    //this is use for get the all files name
     React.useEffect(() => {
-        
         axios.get('http://localhost:8080/file/get-all')
-        .then((response) => {
-            setExsitsFileName(response.data);
-          })
-          .catch((error) => {
-            console.error('Error fetching file names:', error);
-          });
+            .then((response) => {
+                setExsitsFileName(response.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching file names:', error);
+            });
 
     }, []);
 
@@ -172,13 +169,13 @@ const GenerateReports = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.map((row) => (
-                                <TableRow hover key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                    <TableCell component="th" scope="row">{row.fat} </TableCell>
-                                    <TableCell component="th" scope="row">{row.name}</TableCell>
-                                    <TableCell align="right">{row.calories}</TableCell>
-                                    <TableCell align="right">{row.fat}</TableCell>
-                                    <TableCell align="right">{row.carbs}</TableCell>
+                            {data.map((row,index) => (
+                                <TableRow hover key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    {/* <TableCell component="th" scope="row">{row.} </TableCell> */}
+                                    <TableCell component="th" scope="row">{row.nicNumber}</TableCell>
+                                    <TableCell align="right">{row.birthday}</TableCell>
+                                    <TableCell align="right">{row.age}</TableCell>
+                                    <TableCell align="right">{row.gender}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
