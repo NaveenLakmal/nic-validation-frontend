@@ -89,7 +89,7 @@ export default function ForgetPassword() {
         } catch (error) {
             console.error("Error while loging:", error);
 
-        }finally{
+        } finally {
             setLoading(false);
         }
     }
@@ -98,7 +98,7 @@ export default function ForgetPassword() {
     const verifyOtpOnAction = async (event) => {
 
         try {
-           // setLoading(true);
+            // setLoading(true);
             event.preventDefault();
 
             console.log()
@@ -120,7 +120,7 @@ export default function ForgetPassword() {
         } catch (error) {
             console.error("Error while loging:", error);
 
-        }finally{
+        } finally {
             setLoading(false);
         }
     }
@@ -131,16 +131,17 @@ export default function ForgetPassword() {
         try {
             event.preventDefault();
 
-
+            console.log(confirmPassword);
+            console.log(user.email);
             const response = await axios.post("http://localhost:8080/auth/forget-password/new-password", {
                 email: user.email,
-                confirmPassword
+                newPassword:confirmPassword
             });
-            console.log("api called..!");
 
 
-            if (response.data === "Otp Verfied Success..!") {
-                console.log("Otp Verfied Success..!");
+
+            if (response.data === "Password Reset is Successfull...!") {
+                console.log("Password Reset is Successfull...!");
                 Swal.fire({
                     title: "Good job!",
                     text: "You Account Reset Success..!",
@@ -197,16 +198,16 @@ export default function ForgetPassword() {
                             </Typography>
                             <Box component="form" noValidate sx={{ mt: 1 }}>
                                 <TextField
-                                    margin="normal"
                                     required
                                     fullWidth
                                     id="email"
                                     value={user.email}
-                                    onChange={(e) => setEmail({...user, email:e.target.value})}
+                                    onChange={(e) =>
+                                        setUser({ ...user, email: e.target.value })
+                                    }
                                     label="Email Address"
                                     name="email"
                                     autoComplete="email"
-                                    autoFocus
                                 />
 
                                 <Button
@@ -229,7 +230,7 @@ export default function ForgetPassword() {
                                 Verify OTP
                             </Typography>
                             <Box component="form" noValidate sx={{ mt: 1 }}>
-                            <TextField
+                                <TextField
                                     margin="normal"
                                     required
                                     fullWidth
