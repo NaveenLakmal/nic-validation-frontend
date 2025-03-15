@@ -3,11 +3,13 @@ import { Box, Button, Typography, List, ListItem, ListItemText, Snackbar, Card }
 import { CloudUpload as CloudUploadIcon } from '@mui/icons-material';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 
 function UploadNic() {
 
     const [files, setFiles] = useState([]);
     const [openSnackbar, setOpenSnackbar] = useState(false);
+    const {email} = useAuth();
 
     // Handle file selection
     const handleFileChange = (event) => {
@@ -32,7 +34,7 @@ function UploadNic() {
 
 
             try {
-                const response = await axios.post("http://localhost:8080/nic", formData, {
+                const response = await axios.post(`http://localhost:8080/nic/${email}`, formData, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },

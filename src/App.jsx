@@ -10,27 +10,30 @@ import SignIn from './pages/SignIn'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SignUp from './pages/SignUp'
 import ForgetPassword from './pages/ForgetPassword'
+import DashBord from './pages/DashBord'
+import { AuthProvider } from './context/AuthContext'
 
 function App() {
-  
+
 
   return (
-    
-    <Router>
-      
-    <NavBar/>
-    <Routes>
-    <Route path="/" element={<UploadNic /> }/>
-    <Route path="/all-reports" element={<AllReports /> }/>
-    <Route path="/generate-reports" element={<GenerateReports /> }/>
-    <Route path="/sign-in" element={<SignIn /> }/>
-    <Route path="/sign-up" element={<SignUp /> }/>
-    
-    <Route path="/forget-password" element={<ForgetPassword /> }/>
-    </Routes>
-    </Router>
-    
 
+    <AuthProvider>
+      <Router>
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<UploadNic />} />
+          <Route path="/all-reports" element={<AllReports />} />
+          <Route path="/generate-reports" element={<GenerateReports />} />
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/forget-password" element={<ForgetPassword />} />
+          <Route path="/dashbord" element={<DashBord />} />
+
+        </Routes>
+      </Router>
+
+    </AuthProvider>
   )
 }
 

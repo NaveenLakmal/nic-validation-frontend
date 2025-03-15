@@ -14,6 +14,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const theme = createTheme();
 
@@ -37,6 +38,7 @@ export default function SignIn() {
    const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
    const navigate = useNavigate();
+   const {setEmailGlobal} = useAuth();
    
 
   const signInButtonOnAction = async (event) => {
@@ -49,7 +51,7 @@ export default function SignIn() {
       // getOneStudent(memberId);
       console.log(email,password);
 
-      const response = await axios.post("http://localhost:8080/auth/sign-in", {
+      const response = await axios.post("http://localhost:8081/auth/sign-in", {
         email,
         password,
       });
@@ -57,6 +59,7 @@ export default function SignIn() {
 
       if (response.data === "login Success") {
         console.log("correct password");
+        setEmailGlobal(email);
         navigate("/generate-reports");
        
 
