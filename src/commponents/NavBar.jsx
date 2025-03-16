@@ -16,12 +16,18 @@ import AdbIcon from '@mui/icons-material/Adb';
 
 const pages = [
     { name: 'Dashboard', path: '/dashboard' },
-    { name: 'Upload Nic', path: '/' },
+    { name: 'Upload Nic', path: '/upload-csv' },
     { name: 'Generate Reports', path: '/generate-reports' },
     { name: 'All Reports', path: '/all-reports' }
 ];
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings =
+    [
+        { name: 'Profile', path: '/profile' },
+        { name: 'Account', path: '/account' },
+        { name: 'Dashboard', path: '/dashboard' },
+        { name: 'Logout', path: '/' },
+    ];
 
 function NavBar() {
 
@@ -39,11 +45,11 @@ function NavBar() {
         setAnchorElNav(null);
     };
 
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
+    const handleCloseUserMenu = (event) => {
+        setAnchorElUser(event.currentTraget);
     };
 
-   
+
 
     return (
         <AppBar position="static">
@@ -96,7 +102,7 @@ function NavBar() {
                             sx={{ display: { xs: 'block', md: 'none' } }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                                <MenuItem key={page.name} onClick={handleCloseNavMenu}> 
                                     <Typography
                                         component={Link}
                                         to={page.path}
@@ -162,8 +168,12 @@ function NavBar() {
                             onClose={handleCloseUserMenu}
                         >
                             {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                                <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
+                                    <Typography
+                                        component={Link}
+                                        to={setting.path} 
+                                        sx={{ textAlign: 'center', textDecoration: 'none', color: 'inherit' }}>{setting.name}
+                                    </Typography>
                                 </MenuItem>
                             ))}
                         </Menu>

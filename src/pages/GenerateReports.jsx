@@ -11,6 +11,7 @@ import Paper from '@mui/material/Paper';
 import { Box, Button, Container, MenuItem } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 
 
 const GenerateReports = () => {
@@ -21,6 +22,7 @@ const GenerateReports = () => {
     const [error, setError] = React.useState(null); // Store error message
     const [loading, setLoading] = React.useState(false); // Loading state
     const [exsitFileName, setExsitsFileName] = React.useState([]);
+    const {email} = useAuth();
 
     console.log(data);
 
@@ -50,7 +52,7 @@ const GenerateReports = () => {
 
     //this is use for get the all files name
     React.useEffect(() => {
-        axios.get('http://localhost:8080/file/get-all')
+        axios.get(`http://localhost:8080/file/get-all-file/${email}`)
             .then((response) => {
                 setExsitsFileName(response.data);
             })

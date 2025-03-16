@@ -17,6 +17,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Swal from 'sweetalert2';
+import { useAuth } from '../context/AuthContext';
 
 const theme = createTheme();
 
@@ -54,6 +55,7 @@ export default function ForgetPassword() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const {setEmailGlobal} = useAuth();
 
     const handleTogglePassword = () => setShowPassword(!showPassword);
     const handleToggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
@@ -67,7 +69,7 @@ export default function ForgetPassword() {
             event.preventDefault();
 
             console.log(email)
-            const response = await axios.post(`http://localhost:8080/auth/forget-password/${user.email}`);
+            const response = await axios.post(`http://localhost:8081/auth/forget-password/${user.email}`);
 
             console.log(response)
 
@@ -102,7 +104,7 @@ export default function ForgetPassword() {
             event.preventDefault();
 
             console.log()
-            const response = await axios.post("http://localhost:8080/auth/forget-password/verify-otp", {
+            const response = await axios.post("http://localhost:8081/auth/forget-password/verify-otp", {
                 email: user.email,
                 otp: user.otp,
             });
@@ -133,7 +135,7 @@ export default function ForgetPassword() {
 
             console.log(confirmPassword);
             console.log(user.email);
-            const response = await axios.post("http://localhost:8080/auth/forget-password/new-password", {
+            const response = await axios.post("http://localhost:8081/auth/forget-password/new-password", {
                 email: user.email,
                 newPassword:confirmPassword
             });
@@ -147,7 +149,8 @@ export default function ForgetPassword() {
                     text: "You Account Reset Success..!",
                     icon: "success"
                 });
-                navigate("/generate-reports")
+                navigate("/dashboard");
+                setEmailGlobal(user.email);
 
 
             } else {

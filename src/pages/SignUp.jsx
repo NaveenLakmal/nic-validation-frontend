@@ -17,6 +17,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { useAuth } from '../context/AuthContext';
 
 const theme = createTheme();
 
@@ -27,8 +28,8 @@ export default function SignUp() {
     const [otp, setOtp] = useState("");
     const [component, setComponent] = useState(1);
     const [loading, setLoading] = useState(false);
-
     const navigate = useNavigate();
+    const {setEmailGlobal} = useAuth();
 
     const [user, setUser] = useState({
         firstName: '',
@@ -46,7 +47,7 @@ export default function SignUp() {
             event.preventDefault();
 
 
-            const response = await axios.post("http://localhost:8080/auth/sign-up", {
+            const response = await axios.post("http://localhost:8081/auth/sign-up", {
                 fullName: user.firstName + " " + user.lastName,
                 email: user.email,
                 password: user.Password
@@ -78,7 +79,7 @@ export default function SignUp() {
             event.preventDefault();
 
 
-            const response = await axios.post("http://localhost:8080/auth/verify-otp", {
+            const response = await axios.post("http://localhost:8081/auth/verify-otp", {
                 email: user.email,
                 otp,
             });
@@ -87,11 +88,12 @@ export default function SignUp() {
             if (response.data === "otp verified") {
                 
                 Swal.fire({
-                    title: "Good job!",
+                    title: "Welcome!",
                     text: "You Account Created Success..!",
                     icon: "success"
                 });
-                navigate("/generate-reports");
+                setEmailGlobal(user.email);
+                navigate("/dashboard");
 
 
             } else {
